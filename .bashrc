@@ -17,7 +17,7 @@ _extended_git_completion(){
   #echo -e "\n 2nd word :MMM"${COMP_WORDS[1]}"MMM"
   if [[ ${cur} == * ]] ; then
   	for i in ${!COMPREPLY[@]}; do
-      COMPREPLY[$i]=${COMPREPLY[$i]%?} # Supprime l'espace en trop
+      COMPREPLY[$i]=${COMPREPLY[$i]/% /} # Supprime l'espace en trop
     done
     if [[ -z "${COMP_WORDS[2]}" ]]; then # n'ajoute mes options que si le troisième mot est vide (pas l'idéal)
   		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${opts}" -- ${cur}) ) # ajoute à la completion git les options personnellement ajoutées
