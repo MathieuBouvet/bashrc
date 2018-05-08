@@ -8,8 +8,9 @@ declare -a MY_GIT_EXTENDED_OPTIONS=("qlog" "subldiff" "sublshow")
 
 _extended_git_completion(){
 	local cur prev opts
+
 	__git_wrap__git_main # Recupère la completion git
-  	
+
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   opts="${MY_GIT_EXTENDED_OPTIONS[@]}"
@@ -46,7 +47,15 @@ git(){
 	# quick log
 	if [ "$1" = "${MY_GIT_EXTENDED_OPTIONS[0]}" ]
 	then
-		command git log -n $2 --oneline "${@:3}"
+		# Default value for -n log option
+		number_to_show=5
+		remaing_parameters_start=${@:2}
+		regex_number='^[0-9]+$'
+		if [[ "$2" =~ $regex_number ]] ; then # check if second parameter is a number, to override default behavior
+			number_to_show=$2
+			remaing_parameters_start=${@:3}
+		fi
+		command git log -n $number_to_show --oneline $remaing_parameters_start
 	#
 	#
 	# display diff in sublime text
