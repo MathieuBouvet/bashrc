@@ -4,7 +4,7 @@ alias composer="php /C/wamp64/www/composer.phar"
 # revert to original git completion : execute this command
 # complete -o bashdefault -o default -o nospace -F __git_wrap__git_main git
 
-declare -a MY_GIT_EXTENDED_OPTIONS=("qlog" "subldiff" "sublshow")
+declare -a MY_GIT_EXTENDED_OPTIONS=("qlog" "sdiff" "sshow")
 declare -a QLOG_AVAILABLE_OPTIONS=("--all" "--graph")
 declare -a SUBLDIFF_AVAILABLE_OPTIONS=("--cached" "HEAD" "ORIG_HEAD" "FETCH_HEAD")
 declare -a SUBLSHOW_AVAILABLE_OPTIONS=("HEAD" "ORIG_HEAD")
