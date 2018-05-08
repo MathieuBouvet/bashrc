@@ -12,10 +12,7 @@ _extended_git_completion(){
   	
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
-  #opts="qlog subldiff sublshow"
   opts="${MY_GIT_EXTENDED_OPTIONS[@]}"
-  #echo -e "\n 2nd word :MMM"${COMP_WORDS[1]}"MMM"
-  if [[ ${cur} == * ]] ; then
   	for i in ${!COMPREPLY[@]}; do
       COMPREPLY[$i]=${COMPREPLY[$i]/% /} # Supprime l'espace en trop
     done
@@ -23,7 +20,6 @@ _extended_git_completion(){
   		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${opts}" -- ${cur}) ) # ajoute à la completion git les options personnellement ajoutées
   	fi
     return 0
-  fi
 }
 complete -F _extended_git_completion git
 
