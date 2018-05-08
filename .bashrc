@@ -5,6 +5,8 @@ alias composer="php /C/wamp64/www/composer.phar"
 # complete -o bashdefault -o default -o nospace -F __git_wrap__git_main git
 
 declare -a MY_GIT_EXTENDED_OPTIONS=("qlog" "subldiff" "sublshow")
+declare -a QLOG_AVAILABLE_OPTIONS=("--all" "--graph")
+declare -a SUBLDIFF_AVAILABLE_OPTIONS=("--cached" "HEAD" "ORIG_HEAD" "FETCH_HEAD")
 
 _extended_git_completion(){
 	local cur prev opts
@@ -14,14 +16,30 @@ _extended_git_completion(){
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   opts="${MY_GIT_EXTENDED_OPTIONS[@]}"
-  	for i in ${!COMPREPLY[@]}; do
-      COMPREPLY[$i]=${COMPREPLY[$i]/% /} # Supprime l'espace en trop
-    done
-    if [[ "${COMP_WORDS[1]}" == "$cur" ]]; then # n'ajoute mes options que si on est en train de taper le 2eme mot
-  		# ajoute à la completion git les options personnellement ajoutées
-  		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${opts}" -- ${cur}) ) 
-  	fi
-    return 0
+  qlog_opts="${QLOG_AVAILABLE_OPTIONS[@]}"
+  subldiff_opts="${SUBLDIFF_AVAILABLE_OPTIONS[@]}"
+
+	for i in ${!COMPREPLY[@]}; do
+    COMPREPLY[$i]=${COMPREPLY[$i]/% /} # Supprime l'espace en trop
+  done
+  if [[ "${COMP_WORDS[1]}" == "$cur" ]]; then # n'ajoute mes options que si on est en train de taper le 2eme mot
+		# ajoute à la completion git les options personnellement ajoutées
+		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${opts}" -- ${cur}) ) 
+	fi
+
+	#QLOG context
+	if [[ "${COMP_WORDS[1]}" == "${MY_GIT_EXTENDED_OPTIONS[0]}" ]] ; then 
+		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${qlog_opts}" -- ${cur}) ) 
+	fi
+
+	# SUBLDIFF context
+	if [[ "${COMP_WORDS[1]}" == "${MY_GIT_EXTENDED_OPTIONS[1]}" ]] ; then 
+		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${subldiff_opts}" -- ${cur}) )
+		branch_list=$(command git for-each-ref refs/ --format='%(refname:short)')
+		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${branch_list}" -- ${cur}) )
+
+	fi
+  return 0
 }
 complete -F _extended_git_completion git
 
