@@ -7,6 +7,7 @@ alias composer="php /C/wamp64/www/composer.phar"
 declare -a MY_GIT_EXTENDED_OPTIONS=("qlog" "subldiff" "sublshow")
 declare -a QLOG_AVAILABLE_OPTIONS=("--all" "--graph")
 declare -a SUBLDIFF_AVAILABLE_OPTIONS=("--cached" "HEAD" "ORIG_HEAD" "FETCH_HEAD")
+declare -a SUBLSHOW_AVAILABLE_OPTIONS=("HEAD" "ORIG_HEAD")
 
 _extended_git_completion(){
 	local cur prev opts
@@ -18,6 +19,7 @@ _extended_git_completion(){
   opts="${MY_GIT_EXTENDED_OPTIONS[@]}"
   qlog_opts="${QLOG_AVAILABLE_OPTIONS[@]}"
   subldiff_opts="${SUBLDIFF_AVAILABLE_OPTIONS[@]}"
+  sublshow_opts="${SUBLSHOW_AVAILABLE_OPTIONS[@]}"
 
 	for i in ${!COMPREPLY[@]}; do
     COMPREPLY[$i]=${COMPREPLY[$i]/% /} # Supprime l'espace en trop
@@ -27,7 +29,7 @@ _extended_git_completion(){
 		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${opts}" -- ${cur}) ) 
 	fi
 
-	#QLOG context
+	# QLOG context
 	if [[ "${COMP_WORDS[1]}" == "${MY_GIT_EXTENDED_OPTIONS[0]}" ]] ; then 
 		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${qlog_opts}" -- ${cur}) ) 
 	fi
@@ -38,6 +40,13 @@ _extended_git_completion(){
 		branch_list=$(command git for-each-ref refs/ --format='%(refname:short)')
 		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${branch_list}" -- ${cur}) )
 
+	fi
+
+	# SUBLSHOW context
+	if [[ "${COMP_WORDS[1]}" == "${MY_GIT_EXTENDED_OPTIONS[2]}" ]] ; then 
+		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${sublshow_opts}" -- ${cur}) )
+		branch_list=$(command git for-each-ref refs/ --format='%(refname:short)')
+		COMPREPLY=("${COMPREPLY[@]}" $(compgen -W "${branch_list}" -- ${cur}) )
 	fi
   return 0
 }
